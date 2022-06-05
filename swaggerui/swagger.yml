@@ -1,9 +1,20 @@
 components:
+  parameters:
+    Authorization:
+      in: header
+      name: Authorization
+      schema:
+        type: string
   schemas:
     "": {}
+    RequestHeaders:
+      properties:
+        Authorization:
+          type: string
+      type: object
   securitySchemes:
     AuthorizationHeader:
-      description: test
+      description: thisisatest
       scheme: bearer
       type: http
 info:
@@ -21,7 +32,6 @@ openapi: 3.0.0
 paths:
   /namespace:
     get:
-      description: ' Find a namespace by name in the kubernetes cluster'
       requestBody:
         content:
           application/json:
@@ -35,7 +45,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/'
           description: The response from the kubernetes cluster
-      summary: Find Namespace
 security:
 - AuthorizationHeader:
   - read
