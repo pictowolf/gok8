@@ -1,0 +1,45 @@
+components:
+  schemas:
+    "": {}
+  securitySchemes:
+    AuthorizationHeader:
+      description: test
+      scheme: bearer
+      type: http
+info:
+  contact:
+    email: shaun@infinityservers.co.uk
+    name: Infinity Servers
+  description: API for Infinity Servers panel for interactions to kubernetes.
+  license:
+    name: MIT
+    url: https://en.wikipedia.org/wiki/MIT_License
+  termsOfService: https://www.infinityservers.co.uk/terms
+  title: Infinity Servers API
+  version: 1.0.0
+openapi: 3.0.0
+paths:
+  /namespace:
+    get:
+      description: ' Find a namespace by name in the kubernetes cluster'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/'
+          description: The response from the kubernetes cluster
+      summary: Find Namespace
+security:
+- AuthorizationHeader:
+  - read
+  - write
+servers:
+- description: ' Server-1'
+  url: https://www.fake.com
