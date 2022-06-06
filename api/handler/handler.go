@@ -1,10 +1,14 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	k8 "gok8/api"
 	_ "gok8/api/model"
 	"net/http"
+
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // @Tag namespace
@@ -13,9 +17,22 @@ import (
 // @Success 200 {object} model.NamespaceResponse "The response from the kubernetes cluster"
 // @Router /namespace [get]
 func ListNamespaces(w http.ResponseWriter, r *http.Request) {
-	namespaces := "test-ns-string"
-	fmt.Println("Endpoint Hit: ListNamespaces")
-	json.NewEncoder(w).Encode(namespaces)
+	// list of namespaces
+	namespaces, err := k8.Clientset.CoreV1().Namespaces().List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		panic(err.Error())
+	}
+
+	// make a map
+	namespaceMap := make(map[string]string)
+	for _, namespace := range namespaces.Items {
+		namespaceMap[namespace.Name] = namespace.Name
+	}
+
+	fmt.Println(namespaceMap)
+
+	// encode into json
+	json.NewEncoder(w).Encode(namespaceMap)
 }
 
 // @Tag namespace
