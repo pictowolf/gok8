@@ -1,11 +1,16 @@
 package model
 
-type namespaceQuery struct {
+type NamespaceQuery struct {
 	Name  string `json:"name"`
 	State string `json:"state"`
 }
 
-type namespaceResponse struct {
+type NamespaceResponse struct {
+	Name string `json:"name"`
+	Code string `json:"code"`
+}
+
+type NamespaceRequest struct {
 	Name string `json:"name"`
 	Code string `json:"code"`
 }
