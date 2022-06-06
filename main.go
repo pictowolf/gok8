@@ -7,20 +7,19 @@
 // @TermsOfServiceUrl https://www.infinityservers.co.uk/terms
 // @LicenseName MIT
 // @LicenseURL https://en.wikipedia.org/wiki/MIT_License
-// @Server https://www.fake.com Server-1
 // @Security AuthorizationHeader read write
-// @SecurityScheme AuthorizationHeader http bearer thisisatest
+// @SecurityScheme AuthorizationHeader APIKey header X-API-KEY
 
 package main
 
 import (
 	"context"
 	"fmt"
+	handler "gok8/api/handler"
+	_ "gok8/api/model"
 	"log"
 	"net/http"
 	"time"
-
-	_ "gok8/api/model"
 
 	"github.com/gorilla/mux"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -30,9 +29,7 @@ import (
 )
 
 func main() {
-	println("Starting web server...")
-	println("Starting k8 auth in cluster")
-
+	println("Starting API server...")
 	// k8Auth()
 
 	router := mux.NewRouter().StrictSlash(true)
@@ -43,9 +40,11 @@ func main() {
 func registerV1Routes(r *mux.Router) {
 	sh := http.StripPrefix("/swagger/", http.FileServer(http.Dir("./swaggerui/")))
 	r.PathPrefix("/swagger/").Handler(sh)
+	r.HandleFunc("/namespace", handler.ListNamespaces).Methods("GET")
 }
 
 func k8Auth() {
+	println("Starting k8 auth in cluster")
 	// creates the in-cluster config
 	config, err := rest.InClusterConfig()
 	if err != nil {

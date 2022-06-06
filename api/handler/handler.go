@@ -1,18 +1,21 @@
 package handler
 
 import (
+	"encoding/json"
+	"fmt"
 	_ "gok8/api/model"
+	"net/http"
 )
 
 // @Tag namespace
 // @Title List namespaces
 // @Description Get a list of namespaces.
-// @Header model.Headers
-// @Param request body model.NamespaceQuery true "The query to filter namespaces"
 // @Success 200 {object} model.NamespaceResponse "The response from the kubernetes cluster"
 // @Router /namespace [get]
-func listNamespaces() {
-	return
+func ListNamespaces(w http.ResponseWriter, r *http.Request) {
+	namespaces := "test-ns-string"
+	fmt.Println("Endpoint Hit: ListNamespaces")
+	json.NewEncoder(w).Encode(namespaces)
 }
 
 // @Tag namespace
