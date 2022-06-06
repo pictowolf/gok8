@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	k8 "gok8/api"
 	_ "gok8/api/model"
 	"net/http"
@@ -28,7 +27,6 @@ func ListNamespaces(w http.ResponseWriter, r *http.Request) {
 	for _, namespace := range namespaces.Items {
 		namespaceSlice = append(namespaceSlice, namespace.Name)
 	}
-	fmt.Println(namespaceSlice)
 
 	// encode into json
 	json.NewEncoder(w).Encode(namespaceSlice)
