@@ -23,16 +23,15 @@ func ListNamespaces(w http.ResponseWriter, r *http.Request) {
 		panic(err.Error())
 	}
 
-	// make a map
-	namespaceMap := make(map[string]string)
+	// create slice of namespaces
+	namespaceSlice := []string{}
 	for _, namespace := range namespaces.Items {
-		namespaceMap[namespace.Name] = namespace.Name
+		namespaceSlice = append(namespaceSlice, namespace.Name)
 	}
-
-	fmt.Println(namespaceMap)
+	fmt.Println(namespaceSlice)
 
 	// encode into json
-	json.NewEncoder(w).Encode(namespaceMap)
+	json.NewEncoder(w).Encode(namespaceSlice)
 }
 
 // @Tag namespace
