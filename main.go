@@ -36,4 +36,5 @@ func registerV1Routes(r *mux.Router) {
 	sh := http.StripPrefix("/swagger/", http.FileServer(http.Dir("./swaggerui/")))
 	r.PathPrefix("/swagger/").Handler(sh)
 	r.HandleFunc("/namespace", handler.ListNamespaces).Methods("GET")
+	r.HandleFunc("/namespace/{namespace}", handler.CreateNamespace).Methods("POST")
 }

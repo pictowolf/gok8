@@ -13,3 +13,11 @@ type NamespaceRequest struct {
 	Name string `json:"name"`
 	Code string `json:"code"`
 }
+
+type Error struct {
+	Msg string `json:"msg"`
+}
+
+type ErrorResponse struct {
+	ErrorInfo Error `json:"error"`
+}

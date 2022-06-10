@@ -3,10 +3,14 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	k8 "gok8/api"
 	_ "gok8/api/model"
 	"net/http"
 
+	"github.com/gorilla/mux"
+	core "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -16,19 +20,16 @@ import (
 // @Success 200 {object} model.NamespaceResponse "The response from the kubernetes cluster"
 // @Router /namespace [get]
 func ListNamespaces(w http.ResponseWriter, r *http.Request) {
-	// list of namespaces
 	namespaces, err := k8.Clientset.CoreV1().Namespaces().List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		panic(err.Error())
 	}
 
-	// create slice of namespaces
 	namespaceSlice := []string{}
 	for _, namespace := range namespaces.Items {
 		namespaceSlice = append(namespaceSlice, namespace.Name)
 	}
 
-	// encode into json
 	json.NewEncoder(w).Encode(namespaceSlice)
 }
 
@@ -45,11 +46,26 @@ func getNamespace() {
 // @Tag namespace
 // @Title Create namespace
 // @Description Create a namespace
-// @Param request body model.NamespaceRequest true "The request to create a namespace"
-// @Success 200 {object} model.NamespaceResponse "The response from the kubernetes cluster"
-// @Router /namespace [post]
-func createNamespace() {
-	return
+// @Param namespace path string true "The namespace name"
+// @Success 201 "Namespace created"
+// @Failure 409 "Already exists"
+// @Router /namespace/{namespace} [post]
+func CreateNamespace(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	_, err := k8.Clientset.CoreV1().Namespaces().Create(context.TODO(), &core.Namespace{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: vars["namespace"],
+		},
+	}, metav1.CreateOptions{})
+	if errors.IsAlreadyExists(err) {
+		w.WriteHeader(http.StatusConflict)
+		json.NewEncoder(w).Encode("namespace : " + vars["namespace"] + " already exists")
+	} else if err != nil {
+		fmt.Println(err.Error())
+	} else {
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode("namespace : " + vars["namespace"] + " created")
+	}
 }
 
 // @Tag namespace

@@ -23,13 +23,6 @@ components:
         name:
           type: string
       type: object
-    model.NamespaceRequest:
-      properties:
-        code:
-          type: string
-        name:
-          type: string
-      type: object
     model.NamespaceResponse:
       properties:
         name:
@@ -62,24 +55,6 @@ paths:
                 $ref: '#/components/schemas/NamespaceResponse'
           description: The response from the kubernetes cluster
       summary: List namespaces
-      tags:
-      - namespace
-    post:
-      description: ' Create a namespace'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NamespaceRequest'
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NamespaceResponse'
-          description: The response from the kubernetes cluster
-      summary: Create namespace
       tags:
       - namespace
   /namespace/{namespace}:
@@ -123,6 +98,25 @@ paths:
                 $ref: '#/components/schemas/NamespaceResponse'
           description: The response from the kubernetes cluster
       summary: Get namespace
+      tags:
+      - namespace
+    post:
+      description: ' Create a namespace'
+      parameters:
+      - description: The namespace name
+        in: path
+        name: namespace
+        required: true
+        schema:
+          description: The namespace name
+          format: string
+          type: string
+      responses:
+        "201":
+          description: Namespace created
+        "409":
+          description: Already exists
+      summary: Create namespace
       tags:
       - namespace
     put:
